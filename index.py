@@ -17,7 +17,7 @@ for n in range(0, int(qnt_categories)):
   name = input(f'Please, set category name ({n+1}): ')
   categories.append(name)
 
-with open("./test.csv", 'r') as file:
+with open("./pizza.csv", 'r') as file:
     csvreader = csv.DictReader(file)
     info = {}
     categories_info = {}
@@ -37,7 +37,7 @@ with open("./test.csv", 'r') as file:
       categories_info[category] = category_choice.split(',')
 
     # for info in headers:
-    #   new_info = {}
+    #   new_info = {
     #   print(f"Informação: {info}")
 
     #   keep = input("Deseja manter essa informação? (y/N)")
@@ -67,7 +67,9 @@ templateLoader = jinja2.FileSystemLoader(searchpath="./")
 templateEnv = jinja2.Environment(loader=templateLoader)
 TEMPLATE_FILE = "test.html.jinja2"
 template = templateEnv.get_template(TEMPLATE_FILE)
-outputText = template.render({'informations':orders, 'categories':categories})
 
-with open('finalFile.html', 'w') as final:
-  final.write(outputText)
+for x in range(0, len(orders), 8):
+  outputText = template.render({'informations':orders[x:x+8], 'categories':categories})
+
+  with open(f'result_{x}.html', 'w') as final:
+    final.write(outputText)

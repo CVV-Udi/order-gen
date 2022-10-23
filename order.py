@@ -1,4 +1,3 @@
-
 class Order:
     def __init__(self, value: dict, categories: dict, name_index: int):
         self.value = value

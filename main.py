@@ -1,8 +1,5 @@
-from copy import copy
 import csv
-
 from order import Order
-
 import jinja2
 
 
@@ -65,7 +62,7 @@ with open("./pizza.csv", 'r') as file:
     
 templateLoader = jinja2.FileSystemLoader(searchpath="./")
 templateEnv = jinja2.Environment(loader=templateLoader)
-TEMPLATE_FILE = "test.html.jinja2"
+TEMPLATE_FILE = "order_template.html.jinja2"
 template = templateEnv.get_template(TEMPLATE_FILE)
 
 for x in range(0, len(orders), 8):

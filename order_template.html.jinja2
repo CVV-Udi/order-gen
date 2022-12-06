@@ -18,7 +18,7 @@
                         </p>
                     </div>
                 </div>
-                <div class="row border">
+                <div class="row border" style="height: 1.5rem;">
                     <div class="col">
                         <p class="fw-bold">{{info.name}}</p>
                     </div>
@@ -41,6 +41,11 @@
                 </div>
                 {% endfor %}
                 {% endfor %}
+                <div class="row border" style="height: 3rem;">
+                    <div class="col-12">
+                        <p class="fw-bold">{{info.getDescription()}}</p>
+                    </div>
+                </div>
             </div>
             {% endfor %}
         </div>

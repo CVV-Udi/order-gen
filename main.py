@@ -1,6 +1,9 @@
 import csv
 from order import Order
 import jinja2
+import os
+import pdfkit
+
 
 
 headers = []
@@ -9,12 +12,14 @@ rows = []
 qnt_categories = input("How many categories exists in this event? ")
 
 categories = []
+description = -1
+flag_desc = -1
 
 for n in range(0, int(qnt_categories)):
   name = input(f'Please, set category name ({n+1}): ')
   categories.append(name)
 
-with open("./pizza.csv", 'r') as file:
+with open("./galinhada.csv", 'r') as file:
     csvreader = csv.DictReader(file)
     info = {}
     categories_info = {}
@@ -32,6 +37,13 @@ with open("./pizza.csv", 'r') as file:
     for category in categories:
       category_choice = input(f'Quais dessas informações fazem parte da categoria {category}? (ex.: 1,2,3,4)\n')
       categories_info[category] = category_choice.split(',')
+    
+    desc_res = input('Gostaria de adicionar alguma descrição à comanda? (y/N)')
+
+    if desc_res == 'y':
+      print(f'Informações:\n{choices}\n')
+      description = int(input('Qual campo será utilizado como descrição?'))
+      flag_desc = int(input('Flag para a descrição: '))
 
     # for info in headers:
     #   new_info = {
@@ -58,15 +70,24 @@ with open("./pizza.csv", 'r') as file:
 
     orders = []
     for row in csvreader:
-      orders.append(Order(row, categories_info, name))
+      orders.append(Order(row, categories_info, name, description))
     
 templateLoader = jinja2.FileSystemLoader(searchpath="./")
 templateEnv = jinja2.Environment(loader=templateLoader)
 TEMPLATE_FILE = "order_template.html.jinja2"
 template = templateEnv.get_template(TEMPLATE_FILE)
 
+os.mkdir('results')
+os.mkdir('pdf')
 for x in range(0, len(orders), 8):
-  outputText = template.render({'informations':orders[x:x+8], 'categories':categories})
+  outputText = template.render({'informations':orders[x:x+8], 'categories': categories, 'flag_desc': flag_desc})
 
-  with open(f'result_{x}.html', 'w') as final:
+  with open(f'results/result_{x}.html', 'w') as final:
     final.write(outputText)
+#/Users/matheus.santiago/Library/Python/3.9/lib/python/site-packages/wkhtmltopdf/main.py
+config = pdfkit.configuration(wkhtmltopdf="/Users/matheus.santiago/Library/Python/3.9/lib/python/site-packages/wkhtmltopdf/main.py")
+# pdfkit.from_string(html, 'MyPDF.pdf', configuration=config)
+for filename in os.scandir('results'):
+  if filename.is_file():
+    print(filename.path)
+    pdfkit.from_file(filename.path, f'pdf/{filename.path}.pdf', configuration=config)
